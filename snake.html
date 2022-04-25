@@ -25,6 +25,7 @@
       let heightInBlocks = height / blockSize;
       let score = 0;
       let intervalId = null;
+      let appleColor = "Red";
       let animationTime = 100;
       let isPlaying = true;
 
@@ -100,25 +101,22 @@
         this.nextDirection = "right";
       };
 
-      function getRandomColor() {
-        var letters = "0123456789ABCDEF";
-        var color = "#";
-        for (var i = 0; i < 6; i++) {
-          color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-      }
-
       Snake.prototype.draw = function () {
         for (let i = 0; i < this.segments.length; i++) {
           this.segments[0].drawSquare("Green");
           if (i % 2 === 0) {
-            this.segments[i].drawSquare("Red");
+            this.segments[i].drawCircle("Blue");
           } else {
             this.segments[i].drawSquare("Black");
           }
+ 
+       
+       
         }
+        snake.segments.at(-1).drawSquare(getRandomColor())
       };
+
+
 
       Snake.prototype.move = function () {
         let head = this.segments[0];
@@ -145,6 +143,7 @@
 
         if (newHead.equal(apple.position)) {
           score++;
+
           apple.move();
         } else {
           this.segments.pop();
@@ -205,8 +204,24 @@
         this.position = new Block(randomCol, randomRow);
       };
 
+       function getRandomColor() {
+        var letters = "0123456789ABCDEF";
+        var color = "#";
+        for (var i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      };
+
       Apple.prototype.draw = function () {
-        this.position.drawCircle();
+        localStorage.setItem("scoreColor", score);
+        let number = localStorage["scoreColor"];
+        console.log(number);
+        if (number % 2 === 0) {
+          this.position.drawCircle(appleColor);
+        } else if (number % 1 === 0) {
+          this.position.drawCircle(appleColor);
+        }
       };
 
       Apple.prototype.move = function () {
@@ -216,9 +231,14 @@
         if (snake.segments.find((segment) => segment.equal(this.position))) {
           this.move();
         } else {
+            
+        
+        appleColor = getRandomColor()
           this.draw();
         }
       };
+
+
 
       let snake = new Snake();
       let apple = new Apple();
